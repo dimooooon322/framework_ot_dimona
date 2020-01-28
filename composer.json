@@ -1,0 +1,21 @@
+{
+  "name": "dimooooon322/framework_ot_dimona",
+  "description": "Small framework not for global usage, create just for study.",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "dimooooon322",
+      "email": "dj.torvalt@gmail.com"
+    }
+  ],
+  "version": "v1.0.0",
+  "require": {
+    "php": "^7.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "Core\\": "src/Core/"
+    }
+  }
+}
