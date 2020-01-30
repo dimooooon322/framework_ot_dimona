@@ -4,11 +4,26 @@ namespace Core\Http;
 
 class Request extends Message
 {
+    /**
+     * @var array
+     */
     protected $files;
+    /**
+     * @var array
+     */
     protected $cookies;
+    /**
+     * @var array
+     */
     protected $query;
+    /**
+     * @var array
+     */
     protected $form;
 
+    /**
+     * Request constructor.
+     */
     public function __construct()
     {
         $this->setHeaders(getallheaders());

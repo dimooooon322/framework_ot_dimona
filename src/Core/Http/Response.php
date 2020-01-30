@@ -4,6 +4,9 @@ namespace Core\Http;
 
 class Response extends Message
 {
+    /**
+     * Response constructor.
+     */
     public function __construct()
     {
         $this->setHttpVersion($_SERVER['SERVER_PROTOCOL']);

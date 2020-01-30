@@ -2,8 +2,6 @@
 
 namespace Core\Http;
 
-use function Sodium\compare;
-
 class Message
 {
     /**
@@ -70,7 +68,7 @@ class Message
      */
     public function getHeader($name)
     {
-        if(!$this->hasHeader($name))
+        if (!$this->hasHeader($name))
             return false;
         return $this->headers[$name];
     }
