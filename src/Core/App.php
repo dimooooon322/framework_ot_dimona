@@ -4,7 +4,7 @@ namespace Core;
 
 use Core\Http\Request;
 use Core\Http\Response;
-use \Core\Routing\Router;
+use Core\Routing\Router;
 
 class App
 {
