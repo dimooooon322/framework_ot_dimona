@@ -61,14 +61,21 @@ class Database
      * Select data from table
      * @param string $tableName
      * @param array $cols
+     * @param array $condition [optional]
      * @return array
      */
-    public function select(string $tableName, array $cols = ["*"])
+    public function select(string $tableName, array $cols = ["*"], array $condition = [])
     {
         $cols = implode(",", array_values($cols));
-        $query = $this->pdo->prepare("SELECT $cols FROM $tableName");
-        $query->execute();
-        return $query->fetchAll(PDO::FETCH_CLASS, $this->getClassName());
+        if (!empty($condition)) {
+            $conditionQuery = $this->getWhereQuery($condition);
+            $query = $this->pdo->prepare("SELECT $cols FROM $tableName $conditionQuery");
+            $query->execute(array(is_array($condition[1]) ? array_values($condition[1]) : $condition[1]));
+        } else {
+            $query = $this->pdo->prepare("SELECT $cols FROM $tableName");
+            $query->execute();
+        }
+        return $query->fetchAll(PDO::FETCH_CLASS, $this->getClassName());;
     }
 
     /**
@@ -86,7 +93,7 @@ class Database
     public function insert(string $tableName, array $data)
     {
         $cols = implode(",", array_keys($data));
-        $values = implode(",",array_fill(0, count($data), "?"));
+        $values = implode(",", array_fill(0, count($data), "?"));
         $query = $this->pdo->prepare("INSERT INTO $tableName ($cols)  VALUES ($values) ");
         return $query->execute(array_values($data));
     }
@@ -113,11 +120,10 @@ class Database
     public function update(string $tableName, array $data, array $condition)
     {
         $updateQuery = "";
-        foreach ($data as $col=>$value)
-        {
+        foreach ($data as $col => $value) {
             $updateQuery .= $col . "=?,";
         }
-        $updateQuery = substr($updateQuery, 0,-1);
+        $updateQuery = substr($updateQuery, 0, -1);
         $conditionQuery = $this->getWhereQuery($condition);
         $query = $this->pdo->prepare("UPDATE $tableName SET $updateQuery $conditionQuery");
         return $query->execute(array_merge(array_values($data), array_values($condition[1])));
@@ -150,13 +156,13 @@ class Database
     protected function getWhereQuery(array $condition)
     {
         $conditionCol = $condition[0];
-        switch (strtoupper($condition[2])){
+        switch (strtoupper($condition[2])) {
             case "BETWEEN":
                 $conditionVal = "? and ?";
                 $conditionOperator = "BETWEEN";
                 break;
             case "IN":
-                $conditionVal = "(" . implode(",", array_fill(0, count($condition[1]), "?")) .")";
+                $conditionVal = "(" . implode(",", array_fill(0, count($condition[1]), "?")) . ")";
                 $conditionOperator = "IN";
                 break;
             default:
