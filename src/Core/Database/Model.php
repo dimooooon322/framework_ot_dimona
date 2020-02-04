@@ -29,8 +29,7 @@ class Model implements Serializable
      */
     protected static function getTableName(): string
     {
-        $tableName = static::$tableName or array_slice(explode("\\", get_called_class()), -1, 1)[0];
-        return $tableName;
+        return isset(static::$tableName) ? static::$tableName : array_slice(explode("\\", get_called_class()), -1, 1)[0];
     }
 
     /**
@@ -57,6 +56,7 @@ class Model implements Serializable
 
     /**
      * Delete model's object
+     * @return bool
      */
     public function delete()
     {
