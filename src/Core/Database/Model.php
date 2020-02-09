@@ -48,7 +48,7 @@ class Model implements Serializable
      */
     public function save()
     {
-        if (isset($this->id))
+        if (!isset($this->id))
             return static::getDatabase()->insert(static::getTableName(), $this->data);
         else
             return static::getDatabase()->update(static::getTableName(), $this->data, ['id', $this->id]);

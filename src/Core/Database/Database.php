@@ -92,6 +92,7 @@ class Database
      */
     public function insert(string $tableName, array $data)
     {
+        array_walk($data, "escapeValues");
         $cols = implode(",", array_keys($data));
         $values = implode(",", array_fill(0, count($data), "?"));
         $query = $this->pdo->prepare("INSERT INTO $tableName ($cols)  VALUES ($values) ");
@@ -119,6 +120,7 @@ class Database
      */
     public function update(string $tableName, array $data, array $condition)
     {
+        array_walk($data, "escapeValues");
         $updateQuery = "";
         foreach ($data as $col => $value) {
             $updateQuery .= $col . "=?,";
