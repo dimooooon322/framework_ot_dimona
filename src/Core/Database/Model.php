@@ -2,9 +2,10 @@
 
 namespace Core\Database;
 
-use Serializable;
+use Core\Support\Collection;
+use JsonSerializable;
 
-class Model implements Serializable
+class Model implements JsonSerializable
 {
     /**
      * @var array
@@ -16,9 +17,9 @@ class Model implements Serializable
     protected static $tableName;
 
     /**
-     * @return \Core\Database\Database
+     * @return Database
      */
-    protected static function getDatabase(): \Core\Database\Database
+    protected static function getDatabase(): Database
     {
         return $GLOBALS['app']->getDatabase()->setClassName(get_called_class());
     }
@@ -35,7 +36,7 @@ class Model implements Serializable
     /**
      * Find model's objects
      * @param $condition
-     * @return array
+     * @return Collection
      */
     public static function find($condition)
     {
@@ -61,22 +62,6 @@ class Model implements Serializable
     public function delete()
     {
         return static::getDatabase()->delete(static::getTableName(), ['id', $this->id]);
-    }
-
-    /**
-     * @return string
-     */
-    public function serialize()
-    {
-        return serialize($this->data);
-    }
-
-    /**
-     * @param string $data
-     */
-    public function unserialize($data)
-    {
-        $this->data = unserialize($data);
     }
 
     /**
@@ -107,11 +92,19 @@ class Model implements Serializable
     }
 
     /**
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return $this->data;
+    }
+
+    /**
      * @return false|string
      */
     public function __toString()
     {
-        return json_encode($this->data);
+        return json_encode($this->jsonSerialize());
     }
 
 }
