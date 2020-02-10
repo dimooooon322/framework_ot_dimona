@@ -6,8 +6,10 @@ use ArrayAccess;
 use Countable;
 use IteratorAggregate;
 use ArrayIterator;
+use Traversable;
+use JsonSerializable;
 
-class Collection implements ArrayAccess, Countable, IteratorAggregate
+class Collection implements ArrayAccess, Countable, JsonSerializable, IteratorAggregate
 {
     /**
      * @var array
@@ -34,6 +36,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
+     * @param int $options
      * @return false|string
      */
     public function toJson($options = 0)
@@ -58,7 +61,7 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     }
 
     /**
-     * @return \Traversable|void
+     * @return Traversable|void
      */
     public function getIterator()
     {
@@ -102,5 +105,13 @@ class Collection implements ArrayAccess, Countable, IteratorAggregate
     public function offsetGet($offset)
     {
         return isset($this->items[$offset]) ? $this->items[$offset] : null;
+    }
+
+    /**
+     * @return array|mixed
+     */
+    public function jsonSerialize()
+    {
+        return $this->all();
     }
 }

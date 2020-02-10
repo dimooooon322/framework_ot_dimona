@@ -2,6 +2,7 @@
 
 namespace Core\Database;
 
+use Core\Support\Collection;
 use PDO;
 
 class Database
@@ -62,7 +63,7 @@ class Database
      * @param string $tableName
      * @param array $cols
      * @param array $condition [optional]
-     * @return array
+     * @return Collection
      */
     public function select(string $tableName, array $cols = ["*"], array $condition = [])
     {
@@ -75,7 +76,7 @@ class Database
             $query = $this->pdo->prepare("SELECT $cols FROM $tableName");
             $query->execute();
         }
-        return $query->fetchAll(PDO::FETCH_CLASS, $this->getClassName());;
+        return (new Collection($query->fetchAll(PDO::FETCH_CLASS, $this->getClassName())));
     }
 
     /**
