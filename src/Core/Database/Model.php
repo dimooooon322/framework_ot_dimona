@@ -17,14 +17,6 @@ class Model implements JsonSerializable
     protected static $tableName;
 
     /**
-     * @return Database
-     */
-    protected static function getDatabase(): Database
-    {
-        return $GLOBALS['app']->getDatabase()->setClassName(get_called_class());
-    }
-
-    /**
      * Get table name.
      * @return string
      */
@@ -40,7 +32,7 @@ class Model implements JsonSerializable
      */
     public static function find($condition)
     {
-        return static::getDatabase()->select(static::getTableName(), ['*'], $condition);
+        return database()->setClassName(get_called_class())->select(static::getTableName(), ['*'], $condition);
     }
 
     /**
@@ -50,9 +42,9 @@ class Model implements JsonSerializable
     public function save()
     {
         if (!isset($this->id))
-            return static::getDatabase()->insert(static::getTableName(), $this->data);
+            return database()->setClassName(get_called_class())->insert(static::getTableName(), $this->data);
         else
-            return static::getDatabase()->update(static::getTableName(), $this->data, ['id', $this->id]);
+            return database()->setClassName(get_called_class())->update(static::getTableName(), $this->data, ['id', $this->id]);
     }
 
     /**
@@ -61,7 +53,7 @@ class Model implements JsonSerializable
      */
     public function delete()
     {
-        return static::getDatabase()->delete(static::getTableName(), ['id', $this->id]);
+        return database()->setClassName(get_called_class())->delete(static::getTableName(), ['id', $this->id]);
     }
 
     /**

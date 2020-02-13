@@ -15,3 +15,17 @@ if (!function_exists("collect")) {
         return new Collection($array);
     }
 }
+
+if (!function_exists("database")) {
+    function database()
+    {
+        foreach ($GLOBALS as $var) {
+            if ($var instanceof \Core\App) {
+                $app = $var;
+                break;
+            }
+        }
+        return isset($app) ? $app->getDatabase() : null;
+    }
+}
+
