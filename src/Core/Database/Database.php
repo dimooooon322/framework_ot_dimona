@@ -4,6 +4,7 @@ namespace Core\Database;
 
 use Core\Support\Collection;
 use PDO;
+use PDOStatement;
 
 class Database
 {
@@ -33,11 +34,13 @@ class Database
 
     /**
      * @param string $command
-     * @return mixed
+     * @return PDOStatement|array
      */
-    protected function runCommand(string $command)
+    public function runCommand(string $command)
     {
-        return $this->pdo->query($this->pdo->quote($command));
+        if(!$result = $this->pdo->query($command))
+            return $this->pdo->errorInfo();
+        return $result;
     }
 
     /**
