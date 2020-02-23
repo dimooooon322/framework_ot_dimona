@@ -67,7 +67,7 @@ class DatabaseModel
     public function increment(string $name)
     {
         $column = new DatabaseModelColumn($name);
-        $column->setType("int")->setLength(11)->nullable(false)->autoIncrement()->primaryKey()->unsigned();
+        $column->setType("int")->setLength(11)->nullable(false)->autoIncrement()->primaryKey();
         return $this->addColumn($column);
     }
 

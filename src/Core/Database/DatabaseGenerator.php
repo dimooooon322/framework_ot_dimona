@@ -6,16 +6,26 @@ namespace Core\Database;
 class DatabaseGenerator
 {
     /**
+     * @var Database
+     */
+    protected static $database = null;
+
+    /**
      * Create and return database for migrations
      * @return Database
      */
-    public static function getDatabase(): Database
+    protected static function getDatabase(): Database
     {
-        $databaseConfig = config('database');
-        return (new Database($databaseConfig['host'],
-            $databaseConfig['databaseName'],
-            $databaseConfig['user'],
-            $databaseConfig['password']));
+        if (is_null(self::$database)) {
+            $file = file_get_contents(__DIR__ . '/../../../../../../config.json');
+            $config = collect(json_decode($file, true));
+            self::$database = new Database($config["dbHost"],
+                $config["dbName"],
+                $config["dbUser"],
+                $config["dbPassword"]);
+        }
+
+        return self::$database;
     }
 
     /**
@@ -26,9 +36,11 @@ class DatabaseGenerator
     public static function registerModel(string $tableName, callable $func)
     {
         $model = call_user_func($func, new DatabaseModel($tableName));
-        if (is_array($errors = self::getDatabase()->runCommand($model->getFullSQLQuery())))
-            return $errors;
-        return "$tableName successful added to database.";
+        if (is_array($errors = self::getDatabase()->runCommand($model->getFullSQLQuery()))) {
+            print_r($errors);
+            die();
+        }
+        echo "$tableName successful added to database.";
     }
 
     /**
