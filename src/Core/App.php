@@ -6,6 +6,7 @@ use Core\Database\Database;
 use Core\Http\Request;
 use Core\Http\Response;
 use Core\Routing\Router;
+use Core\Support\Collection;
 
 class App
 {
@@ -25,15 +26,24 @@ class App
      * @var \Core\Database\Database
      */
     protected $database = null;
+    /**
+     * @var Collection
+     */
+    protected $config = null;
 
     /**
      * App constructor.
      */
     public function __construct()
     {
+        $this->loadConfig();
         $this->request = new Request();
         $this->response = new Response();
         $this->router = new Router($this->request->getDomain());
+        $this->database = new Database($this->getConfig("dbHost"),
+            $this->getConfig("dbName"),
+            $this->getConfig("dbUser"),
+            $this->getConfig("dbPassword"));
     }
 
     /**
@@ -55,16 +65,22 @@ class App
     }
 
     /**
-     * @param string $host
-     * @param string $databaseName
-     * @param string $user
-     * @param string $password
-     * @return $this
+     * Load config from 'config.json'
      */
-    public function setDatabase(string $host, string $databaseName, string $user, string $password)
+    protected function loadConfig()
     {
-        $this->database = new Database($host, $databaseName, $user, $password);
-        return $this;
+        $file = file_get_contents($_SERVER['DOCUMENT_ROOT'] . '/config.json');
+        $this->config = collect(json_decode($file, true));
+    }
+
+    /**
+     * Get config value
+     * @param $name
+     * @return mixed
+     */
+    public function getConfig($name)
+    {
+        return isset($this->config[$name]) ? $this->config[$name] : null;
     }
 
     /**
@@ -81,5 +97,6 @@ class App
         var_dump($data);
         echo "</pre>";
     }
+
 
 }

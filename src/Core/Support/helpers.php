@@ -21,11 +21,21 @@ if (!function_exists("database")) {
     {
         foreach ($GLOBALS as $var) {
             if ($var instanceof \Core\App) {
-                $app = $var;
-                break;
+                return $var->getDatabase();
             }
         }
-        return isset($app) ? $app->getDatabase() : null;
+        return null;
     }
 }
 
+if (!function_exists("config")) {
+    function config($name)
+    {
+        foreach ($GLOBALS as $var) {
+            if ($var instanceof \Core\App) {
+                return $var->getConfig($name);
+            }
+        }
+        return null;
+    }
+}
