@@ -192,8 +192,8 @@ class DatabaseModelColumn
         return "$this->name $this->type($this->length" .
             (!is_null($this->decimal) ? $this->decimal : "")
             . ")" .
-            ($this->null ? " NULL" : " NOT NULL") .
             ($this->unsigned ? " UNSIGNED" : "") .
+            ($this->null ? " NULL" : " NOT NULL") .
             ($this->autoIncrement ? " AUTO_INCREMENT" : "") .
             ($this->unique ? " UNIQUE" : "") .
             (!is_null($this->default) ? " DEFAULT $this->default" : "") .
